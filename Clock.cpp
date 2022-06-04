@@ -126,6 +126,18 @@ void Clock::toggleAlarm()
   Rtc.SetMemory((const uint8_t)NVRAM_ADDR_ALARM_ENABLED, enabled);
 }
 
+void Clock::enableAlarm()
+{
+  _alarm_state = ALARM_OFF;
+  Rtc.SetMemory((const uint8_t)NVRAM_ADDR_ALARM_ENABLED, true);
+}
+
+void Clock::disableAlarm()
+{
+  _alarm_state = ALARM_DISABLED;
+  Rtc.SetMemory((const uint8_t)NVRAM_ADDR_ALARM_ENABLED, false);
+}
+
 RtcDateTime Clock::now()
 {
   return Rtc.GetDateTime();

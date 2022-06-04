@@ -15,20 +15,21 @@ void Reader::begin()
   _rc.PCD_Init();
 }
 
-bool Reader::isValid()
+// A -> active = Reader is listening
+// T -> true = valid
+// F -> false = invalid
+char Reader::validate()
 {
   // Look for new cards
   if (!_rc.PICC_IsNewCardPresent())
-    return false;
+    return 'A';
 
   // Select one of the cards
   if (!_rc.PICC_ReadCardSerial())
-    return false;
+    return 'A';
 
-  // Show UID on serial monitor
-
-  String content = "";
   byte letter;
+  String content = "";
 
   for (byte i = 0; i < _rc.uid.size; i++)
   {
@@ -42,6 +43,7 @@ bool Reader::isValid()
   Serial.println(content);
 
   if (content.substring(1) == "CD 03 80 38")
-    return true;
-  return false;
+    return 'T';
+
+  return 'F';
 }

@@ -18,7 +18,7 @@ AlarmTone alarmTone(A3);
 Button btn(A0);
 Reader rd(3, 2);
 
-// icon bell
+// bell symbol
 byte bell[8] = {
     B00100,
     B01110,
@@ -29,7 +29,7 @@ byte bell[8] = {
     B00000,
     B00100};
 
-// icon pipe
+// pipe symbol
 byte pipe[] = {
     B11111,
     B11111,
@@ -84,7 +84,7 @@ void displayTime()
 
 void clockState()
 {
-  setDisplayStatus("***** Time *****");
+  setDisplayStatus("Date    Time    ");
   displayTime();
 
   if (btn.read() == Button::RELEASED && clock.alarmActive())
@@ -94,16 +94,19 @@ void clockState()
     return;
   }
 
-  if (btn.pressed() && btn.direction() == 'S')
+  if (btn.pressed())
   {
-    clock.toggleAlarm();
-    setDisplayState(DisplayAlarmTime);
+    if (btn.direction() == 'S')
+      setDisplayState(DisplayAlarmTime);
+
+    if (btn.direction() == 'R')
+      clock.toggleAlarm();
   }
 }
 
 void alarmTimeState()
 {
-  setDisplayStatus("*** Set Alarm ***");
+  setDisplayStatus("   *Set Alarm*    ");
   RtcDateTime alarmTime = clock.alarmTime();
 
   char fDateTime[12];
@@ -128,6 +131,7 @@ void alarmTimeState()
 
     if (btn.direction() == 'S')
     {
+      clock.enableAlarm();
       setDisplayState(DisplayClock);
     }
   }
@@ -135,20 +139,22 @@ void alarmTimeState()
 
 void alarmActiveState()
 {
-  setDisplayStatus("** WAKE UP!!! **");
+  displayTime();
 
   if (btn.read() == Button::RELEASED)
     alarmTone.play();
 
-  if (rd.isValid())
+  if (rd.validate() == 'A')
+    setDisplayStatus("    Wake Up     ");
+
+  if (rd.validate() == 'F')
+    setDisplayStatus(" Invalid card!  ");
+
+  if (rd.validate() == 'T')
   {
     alarmTone.stop();
     clock.stopAlarm();
     setDisplayState(DisplayClock);
-  }
-  else
-  {
-    setDisplayStatus("** Scan it!!! **");
   }
 }
 

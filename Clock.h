@@ -25,6 +25,8 @@ public:
   void incrementAlarmMinute();
   void stopAlarm();
   void toggleAlarm();
+  void enableAlarm();
+  void disableAlarm();
 
   bool alarmEnabled();
   bool alarmActive();
