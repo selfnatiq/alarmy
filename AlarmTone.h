@@ -1,6 +1,10 @@
 #ifndef __ALARM_TONE_H__
 #define __ALARM_TONE_H__
 
+/**
+ * AlarmTone class responsible for playing and stoping the alarm
+ *
+ */
 class AlarmTone
 {
 public:

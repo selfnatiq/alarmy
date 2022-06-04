@@ -9,12 +9,18 @@ Reader::Reader(uint8_t ss_pin = 3, uint8_t rst_pin = 2)
 {
 }
 
+/**
+ * calls the SPI begin method
+ * and initialzes RFID pcd
+ *
+ */
 void Reader::begin()
 {
   SPI.begin();
   _rc.PCD_Init();
 }
 
+// Returns the following chars
 // A -> active = Reader is listening
 // T -> true = valid
 // F -> false = invalid
@@ -42,8 +48,10 @@ char Reader::validate()
   Serial.print("Tag: ");
   Serial.println(content);
 
+  // check the string if it matches, then return T
   if (content.substring(1) == "CD 03 80 38")
     return 'T';
 
+  // else return false
   return 'F';
 }

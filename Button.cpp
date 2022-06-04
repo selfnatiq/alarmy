@@ -1,16 +1,27 @@
 #include "Button.h"
 #include <Arduino.h>
 
+/**
+ * Initialze class members
+ * debounce_ms: debounce millis for next event
+ */
 Button::Button(uint8_t pin, uint16_t debounce_ms)
     : _pin(pin), _delay(debounce_ms), _state(HIGH), _ignore_until(0), _has_changed(false)
 {
 }
 
+/**
+ * Activate the pin as INPUT_PULLUP
+ */
 void Button::begin()
 {
   pinMode(_pin, INPUT_PULLUP);
 }
 
+/**
+ * Return true if any button is pressed
+ * and does the debouce to avoid multiple events
+ */
 bool Button::read()
 {
   // ignore pin changes until after this delay time
@@ -29,6 +40,10 @@ bool Button::read()
   return _state;
 }
 
+/**
+ * Returns analogRead value of the buttons
+ * since the buttons on lcd keypad shield acts like joystick
+ */
 uint16_t Button::value()
 {
   if (read() == PRESSED)
@@ -62,6 +77,16 @@ bool Button::released()
   return (read() == RELEASED && has_changed());
 }
 
+/**
+ * Return char based on analogRead value
+ *
+ * R -> Right
+ * U -> Up
+ * D -> Down
+ * L -> Left
+ * S -> Select
+ *
+ */
 char Button::direction()
 {
   uint16_t v = value();

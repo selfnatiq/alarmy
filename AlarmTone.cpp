@@ -8,18 +8,30 @@ static const uint16_t TONES[] = {
     500,
     800,
 };
+
 const uint16_t NUM_TONES = sizeof(TONES) / sizeof(TONES[0]);
 
+/**
+ * Initialze class members
+ *
+ */
 AlarmTone::AlarmTone(uint8_t pin)
     : _pin(pin), _playing(false), _tone_index(0), _last_tone_time(0)
 {
 }
 
+/**
+ * Activate the pin as OUTPUT
+ */
 void AlarmTone::begin()
 {
   pinMode(_pin, OUTPUT);
 }
 
+/**
+ * Plays alarm sound
+ *
+ */
 void AlarmTone::play()
 {
   if (!_playing || _last_tone_time + TONE_TIME + TONE_SPACING < millis())
@@ -31,6 +43,10 @@ void AlarmTone::play()
   _playing = true;
 }
 
+/**
+ * Stops alarm sound
+ *
+ */
 void AlarmTone::stop()
 {
   noTone(_pin);

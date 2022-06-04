@@ -3,6 +3,10 @@
 
 #include <MFRC522.h>
 
+/**
+ * Reader class responsible for RFID RC522 component
+ *
+ */
 class Reader
 {
 public:

@@ -2,6 +2,10 @@
 #define Button_h
 #include "Arduino.h"
 
+/**
+ * Button class responsible for buttons on LCD Keypad Shield
+ *
+ */
 class Button
 {
 public:
