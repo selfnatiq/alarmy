@@ -11,18 +11,27 @@
 
 #define MINUTE 60 * 1000L /* ms */
 
+// storage keys in nvram
 #define NVRAM_ADDR_ALARM_ENABLED 0
 #define NVRAM_ADDR_ALARM_HOUR 1
 #define NVRAM_ADDR_ALARM_MINUTE 2
 
+// initializers
 ThreeWire rtcWires(DAT, CLK, RST);
 RtcDS1302<ThreeWire> Rtc(rtcWires);
 
+// assign values to class members
 Clock::Clock()
     : _alarm_state(ALARM_OFF), _alarm_hour(0), _alarm_minute(0)
 {
 }
 
+/**
+ * This method initializes RTC and adjust time on rtc with current time on system
+ * then it runs some if checks to make sure that RTC is running correctly
+ *
+ * at the end, it reads from rtc memory the keys that are declared on line 15 - 17
+ */
 void Clock::begin()
 {
   Rtc.Begin();
@@ -72,6 +81,10 @@ void Clock::begin()
   _alarm_minute = Rtc.GetMemory(NVRAM_ADDR_ALARM_MINUTE) % 60;
 }
 
+/**
+ * This method will return true if alarmTime matches the current time
+ *
+ */
 bool Clock::_isAlarmDueTime()
 {
   auto currentTime = now();
@@ -79,11 +92,19 @@ bool Clock::_isAlarmDueTime()
   return ((currentTime.Hour() == alarm.Hour()) && (currentTime.Minute() == alarm.Minute()));
 }
 
+/**
+ * Checks for if alarm is enabled
+ * returns true if enabled
+ */
 bool Clock::alarmEnabled()
 {
   return _alarm_state != ALARM_DISABLED;
 }
 
+/**
+ * This method will return true if alarm is enabled and _isAlarmDueTime method return true
+ *
+ */
 bool Clock::alarmActive()
 {
   if (_alarm_state == ALARM_ACTIVE)
@@ -114,11 +135,19 @@ bool Clock::alarmActive()
   return false;
 }
 
+/**
+ * This methods stop the alarm by setting _alarm_state to stopped
+ *
+ */
 void Clock::stopAlarm()
 {
   _alarm_state = ALARM_STOPPED;
 }
 
+/**
+ * This method toggles that alarm state and also saves it memory
+ *
+ */
 void Clock::toggleAlarm()
 {
   bool enabled = !alarmEnabled();
@@ -126,23 +155,39 @@ void Clock::toggleAlarm()
   Rtc.SetMemory((const uint8_t)NVRAM_ADDR_ALARM_ENABLED, enabled);
 }
 
+/**
+ * This method enables the alarm and alse updates the memory
+ *
+ */
 void Clock::enableAlarm()
 {
   _alarm_state = ALARM_OFF;
   Rtc.SetMemory((const uint8_t)NVRAM_ADDR_ALARM_ENABLED, true);
 }
 
+/**
+ * This method disables the alarm and updates the memory
+ *
+ */
 void Clock::disableAlarm()
 {
   _alarm_state = ALARM_DISABLED;
   Rtc.SetMemory((const uint8_t)NVRAM_ADDR_ALARM_ENABLED, false);
 }
 
+/**
+ * Returns the current time from RTC
+ *
+ */
 RtcDateTime Clock::now()
 {
   return Rtc.GetDateTime();
 }
 
+/**
+ * Returns the alarm time that is stored in the memory
+ *
+ */
 RtcDateTime Clock::alarmTime()
 {
   char timeString[7];
@@ -154,6 +199,10 @@ RtcDateTime Clock::alarmTime()
   return alarm;
 }
 
+/**
+ * This method increments alarm hour by 1 and updates the it to memory
+ *
+ */
 void Clock::incrementAlarmHour()
 {
   _alarm_hour = (_alarm_hour + 1) % 24;
@@ -161,6 +210,10 @@ void Clock::incrementAlarmHour()
   Rtc.SetMemory((const uint8_t)NVRAM_ADDR_ALARM_HOUR, _alarm_hour);
 }
 
+/**
+ * This method increments alarm minute by 1 and updates the it to memory
+ *
+ */
 void Clock::incrementAlarmMinute()
 {
   _alarm_minute = (_alarm_minute + 1) % 60;

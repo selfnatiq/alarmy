@@ -14,7 +14,9 @@ enum AlarmState
 };
 
 /**
- * Clock class responsible for managing alarm time and saving it to memeory
+ * Clock class responsible for managing alarm time and saving it to nvram on RTC
+ *
+ *
  */
 class Clock
 {
