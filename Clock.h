@@ -4,6 +4,7 @@
 #include <ThreeWire.h>
 #include <RtcDS1302.h>
 
+// Alarm states
 enum AlarmState
 {
   ALARM_DISABLED,
@@ -12,6 +13,9 @@ enum AlarmState
   ALARM_STOPPED,
 };
 
+/**
+ * Clock class responsible for managing alarm time and saving it to memeory
+ */
 class Clock
 {
 public:
